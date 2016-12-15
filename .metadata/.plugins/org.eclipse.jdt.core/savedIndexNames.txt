@@ -1,4 +1,0 @@
-INDEX VERSION 1.129+D:\Studia\Sem 2 mgr\PARS\JavaEE - Chat\.metadata\.plugins\org.eclipse.jdt.core
-4132447889.index
-1668301934.index
-4267283917.index
