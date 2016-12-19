@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.example.chat.protocol.IChatService;
 import com.example.chat.protocol.Message;
+import com.example.chat.protocol.Protocol;
 
 public class ChatService implements IChatService {
 	
@@ -32,8 +33,14 @@ public class ChatService implements IChatService {
 	@Override
 	public boolean sendMessage(long author, Message message) {
 		LOGGER.info("Użytkownik <{}> wysłał wiadomość <{}>", message.getAuthor(), message.getMessage());
-		
+		userService.sendMessage(author, message);
 		return true;
+	}
+
+	@Override
+	public boolean changeTechnology(long author, Protocol protocol) {
+		userService.changeTechnology(author,protocol);
+		return false;
 	}
 
 }

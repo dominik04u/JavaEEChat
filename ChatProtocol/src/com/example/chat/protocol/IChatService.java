@@ -8,4 +8,6 @@ public interface IChatService {
 	
 	boolean sendMessage(long author, Message message);
 	
+	boolean changeTechnology(long author, Protocol protocol);
+	
 }
