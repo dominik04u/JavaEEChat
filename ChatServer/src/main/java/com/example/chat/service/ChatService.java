@@ -1,5 +1,7 @@
 package com.example.chat.service;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +43,11 @@ public class ChatService implements IChatService {
 	public boolean changeTechnology(long author, Protocol protocol) {
 		userService.changeTechnology(author,protocol);
 		return false;
+	}
+
+	@Override
+	public List<Message> getMyMessages(long userId) {
+		return userService.readMessagesForUser(userId);
 	}
 
 }

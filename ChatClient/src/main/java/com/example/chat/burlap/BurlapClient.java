@@ -19,25 +19,25 @@ public class BurlapClient {
 	@Value("${server.url}")
 	private String url;
 
-	public IChatService getService(){
-		String serviceUrl=url+BURLAP_SERVICE;
-		
-		BurlapProxyFactory burlapPF=new BurlapProxyFactory(){
+	public IChatService getService() {
+		String serviceUrl = url + BURLAP_SERVICE;
+
+		BurlapProxyFactory burlapPF = new BurlapProxyFactory() {
 			@Override
-			protected URLConnection openConnection(URL url) throws IOException{
-				URLConnection urlCon= super.openConnection(url);
+			protected URLConnection openConnection(URL url) throws IOException {
+				URLConnection urlCon = super.openConnection(url);
 				urlCon.setRequestProperty("UserAgent", "RC-Burlap");
 				return urlCon;
-		}
-	};
-	
-	BurlapProxyFactoryBean burlapPFB = new BurlapProxyFactoryBean();
-	burlapPFB.setServiceUrl(serviceUrl);
-	burlapPFB.setServiceInterface(IChatService.class);
-	burlapPFB.setProxyFactory(burlapPF);
-	burlapPFB.afterPropertiesSet();
-	IChatService chatService= (IChatService) burlapPFB.getObject();
-	
-	return chatService;
-}
+			}
+		};
+
+		BurlapProxyFactoryBean burlapPFB = new BurlapProxyFactoryBean();
+		burlapPFB.setServiceUrl(serviceUrl);
+		burlapPFB.setServiceInterface(IChatService.class);
+		burlapPFB.setProxyFactory(burlapPF);
+		burlapPFB.afterPropertiesSet();
+		IChatService chatService = (IChatService) burlapPFB.getObject();
+
+		return chatService;
+	}
 }

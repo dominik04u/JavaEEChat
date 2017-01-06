@@ -5,6 +5,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
 import com.example.chat.event.LoginEvent;
+import com.example.chat.service.CommunicationService;
 
 @Component
 public class LoginEventListener implements ApplicationListener<LoginEvent> {
@@ -13,9 +14,9 @@ public class LoginEventListener implements ApplicationListener<LoginEvent> {
 	private CommunicationService cS;
 
 	@Override
-	public void onApplicationEvent(LoginEvent arg0) {
+	public void onApplicationEvent(LoginEvent event) {
 		// TODO Auto-generated method stub
-		
+		cS.login(event.getUsername());
 	}
 	
 }

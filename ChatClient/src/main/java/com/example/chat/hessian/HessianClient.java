@@ -1,17 +1,17 @@
 package com.example.chat.hessian;
 
-import com.caucho.hessian.client.HessianConnection;
-import com.caucho.hessian.client.HessianConnectionFactory;
-import com.caucho.hessian.client.HessianProxyFactory;
-import com.caucho.hessian.client.HessianURLConnectionFactory;
-import com.example.chat.protocol.IChatService;
-
 import java.io.IOException;
 import java.net.URL;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.remoting.caucho.HessianProxyFactoryBean;
 import org.springframework.stereotype.Component;
+
+import com.caucho.hessian.client.HessianConnection;
+import com.caucho.hessian.client.HessianConnectionFactory;
+import com.caucho.hessian.client.HessianProxyFactory;
+import com.example.chat.protocol.IChatService;
 
 @Component
 public class HessianClient {
