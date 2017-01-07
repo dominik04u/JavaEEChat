@@ -3,6 +3,7 @@ package com.example.chat.panels;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.TextArea;
+import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -11,27 +12,36 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationListener;
+import org.springframework.stereotype.Component;
 
 import com.example.chat.event.LoginEvent;
+import com.example.chat.protocol.Message;
+import com.example.chat.protocol.Protocol;
 import com.example.chat.service.CommunicationService;
+import com.example.chat.service.Statics;
 
+@Component
 public class Application extends JFrame implements ApplicationListener<ApplicationEvent> {
 
 	private final ApplicationEventPublisher publisher;
 	private final CommunicationService communicationService;
 	private final StringBuilder messagesBuilder;
 
+	@Autowired
 	public Application(ApplicationEventPublisher publisher, CommunicationService communicationService) {
 		this.publisher = publisher;
 		this.messagesBuilder = new StringBuilder();
 		this.communicationService = communicationService;
 		initApp();
 	}
-	
+
 	JTextField username;
+	TextArea message;
+	TextArea chatMessages;
 
 	private void initApp() {
 
@@ -65,10 +75,20 @@ public class Application extends JFrame implements ApplicationListener<Applicati
 
 		burlap.setSelected(true);
 		burlap.setBounds(59, 5, 80, 23);
+		burlap.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				burlapRadioActionPerformed(evt);
+			}
+		});
 		pane2.add(burlap);
 		btnGroup.add(burlap);
 		JRadioButton hessian = new JRadioButton("Hessian");
 		hessian.setBounds(260, 5, 80, 23);
+		hessian.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				hessianRadioActionPerformed(evt);
+			}
+		});
 		pane2.add(hessian);
 		btnGroup.add(hessian);
 		pane.setLayout(null);
@@ -76,22 +96,27 @@ public class Application extends JFrame implements ApplicationListener<Applicati
 		pane.add(pane1);
 		pane.add(pane2);
 
-		TextArea textArea = new TextArea();
-		textArea.setEditable(false);
-		textArea.setBounds(0, 33, 384, 160);
-		pane2.add(textArea);
+		chatMessages = new TextArea();
+		chatMessages.setEditable(false);
+		chatMessages.setBounds(0, 33, 384, 160);
+		pane2.add(chatMessages);
 		pane.add(pane3);
 		pane3.setLayout(null);
 
-		TextArea textArea_1 = new TextArea();
-		textArea_1.setBounds(0, 0, 384, 100);
-		pane3.add(textArea_1);
+		message = new TextArea();
+		message.setBounds(0, 0, 384, 100);
+		pane3.add(message);
 
 		// wyslij wiadomosc
 		JButton btn = new JButton("Send");
 		btn.setBounds(0, 100, 384, 20);
 		btn.setPreferredSize(new Dimension(80, 20));
 		btn.setPreferredSize(new Dimension(80, 20));
+		btn.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent event) {
+				sendButtonActionPerformed(event);
+			}
+		});
 		pane3.add(btn);
 
 		JFrame fr = new JFrame();
@@ -103,12 +128,59 @@ public class Application extends JFrame implements ApplicationListener<Applicati
 		fr.setVisible(true); // M
 
 	}
-	
-	private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        LoginEvent loginEvent = new LoginEvent(this, username.getText());
-        publisher.publishEvent(loginEvent);
-    }
 
+	private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		LoginEvent loginEvent = new LoginEvent(this, username.getText());
+		publisher.publishEvent(loginEvent);
+	}
+
+	private void sendButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		sendMessage();
+	}
+
+	private void sendMessage() {
+		String mess = message.getText();
+		message.setText("");
+		// communicationService.sendMessage(mess);
+	}
+
+	private void burlapRadioActionPerformed(java.awt.event.ActionEvent evt) {
+		chatMessages.setText("");
+		Statics.setSelectedProtocol(Protocol.BURLAP);
+	}
+
+	// zmiana na hessian
+	private void hessianRadioActionPerformed(java.awt.event.ActionEvent evt) {
+		chatMessages.setText("");
+		Statics.setSelectedProtocol(Protocol.HESSIAN);
+	}
+	
+	public void setText(List<Message> messages) {
+        messages.stream().forEach((message) -> {
+            updateMessages(message);
+            chatMessages.setText("<html><body>" + messagesBuilder.toString() + "</html></body>");
+        });
+    }
+	
+	 private void updateMessages(Message receivedMessage) {
+	        boolean myMessage = receivedMessage.getAuthor().equals(Statics.getLoggedUser().getUsername());
+	        if (myMessage) {
+	            messagesBuilder.append("<strong>");
+	        } else {
+	            messagesBuilder.append("<span>");
+	        }
+	        messagesBuilder.append(receivedMessage.getAuthor());
+	        messagesBuilder.append(":");
+	        if (myMessage) {
+	            messagesBuilder.append("</strong>");
+	        } else {
+	            messagesBuilder.append("</span>");
+	        }
+	        messagesBuilder.append("<pre>");
+	        messagesBuilder.append(receivedMessage.getMessage());
+	        messagesBuilder.append("</pre>");
+	        messagesBuilder.append("<hr/>");
+	}
 
 	@Override
 	public void onApplicationEvent(ApplicationEvent arg0) {

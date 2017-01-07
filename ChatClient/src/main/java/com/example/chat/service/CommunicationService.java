@@ -17,6 +17,7 @@ import com.example.chat.protocol.IChatService;
 import com.example.chat.protocol.Message;
 import com.example.chat.protocol.Protocol;
 import static com.example.chat.service.Statics.*;
+
 @Component
 public class CommunicationService {
 	
