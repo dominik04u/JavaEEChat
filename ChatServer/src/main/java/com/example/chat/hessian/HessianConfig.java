@@ -11,12 +11,12 @@ import com.example.chat.protocol.IChatService;
 public class HessianConfig {
 	
 	@Autowired
-	private IChatService burlapService;
+	private IChatService hessianService;
 	
 	@Bean(name="/hessianService")
-	public HessianServiceExporter burlapService(){
+	public HessianServiceExporter hessianService(){
 		HessianServiceExporter hSE=new HessianServiceExporter();
-		hSE.setService(burlapService);
+		hSE.setService(hessianService);
 		hSE.setServiceInterface(IChatService.class);
 		
 		return hSE;
