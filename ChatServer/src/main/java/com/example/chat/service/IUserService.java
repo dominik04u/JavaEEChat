@@ -14,6 +14,6 @@ public interface IUserService {
 	void sendMessage(long author, Message message);
 
 	void changeTechnology(long author, Protocol protocol);
-
+	
 	List<Message> readMessagesForUser(long userId);
 }

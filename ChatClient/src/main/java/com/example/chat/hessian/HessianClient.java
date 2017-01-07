@@ -17,7 +17,7 @@ import com.example.chat.protocol.IChatService;
 @Component
 public class HessianClient {
 
-	private static final String HESSIAN_SERVICE = "hessianService";
+	private static final String HESSIAN_SERVICE = "/hessianService";
 
 	@Autowired
 	@Value("${server.url}")
@@ -25,10 +25,10 @@ public class HessianClient {
 
 	public IChatService getService() {
 		String serviceUrl = url + HESSIAN_SERVICE;
-		
-		HessianProxyFactory hPF=new HessianProxyFactory();
-		HessianConnectionFactory hCF = new HessianURLConnectionFactory() {			
-			
+
+		HessianProxyFactory hPF = new HessianProxyFactory();
+		HessianConnectionFactory hCF = new HessianURLConnectionFactory() {
+
 			@Override
 			public HessianConnection open(URL url) throws IOException {
 				HessianConnection hC = super.open(url);
@@ -36,18 +36,18 @@ public class HessianClient {
 				return hC;
 			}
 		};
-		
+
 		hCF.setHessianProxyFactory(hPF);
 		hPF.setConnectionFactory(hCF);
-		
-		HessianProxyFactoryBean hPFB=new HessianProxyFactoryBean();
+
+		HessianProxyFactoryBean hPFB = new HessianProxyFactoryBean();
 		hPFB.setProxyFactory(hPF);
 		hPFB.setConnectionFactory(hCF);
 		hPFB.setServiceUrl(serviceUrl);
 		hPFB.setServiceInterface(IChatService.class);
-		
+
 		hPFB.afterPropertiesSet();
-		IChatService chatService=(IChatService) hPFB.getObject();
+		IChatService chatService = (IChatService) hPFB.getObject();
 		return chatService;
 	}
 }

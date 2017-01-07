@@ -15,7 +15,7 @@ import com.example.chat.protocol.IChatService;
 @Component
 public class BurlapClient {
 
-	private static final String BURLAP_SERVICE = "burlapService";
+	private static final String BURLAP_SERVICE = "/burlapService";
 
 	@Autowired
 	@Value("${server.url}")

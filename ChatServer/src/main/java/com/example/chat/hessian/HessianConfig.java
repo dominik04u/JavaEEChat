@@ -15,11 +15,11 @@ public class HessianConfig {
 	
 	@Bean(name="/hessianService")
 	public HessianServiceExporter hessianService(){
-		HessianServiceExporter hSE=new HessianServiceExporter();
-		hSE.setService(hessianService);
-		hSE.setServiceInterface(IChatService.class);
+		HessianServiceExporter exporter=new HessianServiceExporter();
+		exporter.setService(hessianService);
+		exporter.setServiceInterface(IChatService.class);
 		
-		return hSE;
+		return exporter;
 	}
 	
 }

@@ -15,7 +15,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>1.4.2.RELEASE</version>
-		<relativePath /> <!-- lookup parent from repository -->
+		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
 	<properties>
@@ -26,14 +26,21 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.example.chat</groupId>
-			<artifactId>ChatProtocol</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		
+		
+		 <dependency>
+            <groupId>com.caucho</groupId>
+            <artifactId>hessian</artifactId>
+            <version>4.0.38</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.example.chat</groupId>
+			 <artifactId>ChatProtocol</artifactId>
+			 <version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
@@ -41,7 +48,6 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
 	</dependencies>
 
 	<build>
