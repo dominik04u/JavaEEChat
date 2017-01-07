@@ -28,19 +28,19 @@ public class CommunicationService {
 	
 	@Autowired
 	public CommunicationService(BurlapClient burlapClient, HessianClient hessianClient) throws MalformedURLException {
-		this. burlapClient=burlapClient;
+		this.burlapClient=burlapClient;
 		this.hessianClient=hessianClient;
 		burlap();
 		hessian();
 	}
 	
 	private void burlap(){
-		IChatService burlapClient = burlapClient.getService();
+		IChatService burlapService = burlapClient.getService();
 		CHAT_SERVICES.put(Protocol.BURLAP, burlapService);
 	}
 	
 	private void hessian(){
-		IChatService hessianClient = hessianClient.getService();
+		IChatService hessianService = hessianClient.getService();
 		CHAT_SERVICES.put(Protocol.HESSIAN, hessianService);
 	}
 	

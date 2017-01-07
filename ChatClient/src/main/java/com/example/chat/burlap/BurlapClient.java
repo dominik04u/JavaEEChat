@@ -1,13 +1,15 @@
 package com.example.chat.burlap;
 
-import com.caucho.burlap.client.BurlapProxyFactory;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.remoting.caucho.BurlapProxyFactoryBean;
 import org.springframework.stereotype.Component;
+
+import com.caucho.burlap.client.BurlapProxyFactory;
 import com.example.chat.protocol.IChatService;
 
 @Component
@@ -26,7 +28,7 @@ public class BurlapClient {
 			@Override
 			protected URLConnection openConnection(URL url) throws IOException {
 				URLConnection urlCon = super.openConnection(url);
-				urlCon.setRequestProperty("UserAgent", "RC-Burlap");
+				urlCon.setRequestProperty("User-Agent", "RC-Burlap");
 				return urlCon;
 			}
 		};

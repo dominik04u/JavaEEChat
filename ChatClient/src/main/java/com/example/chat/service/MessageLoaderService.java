@@ -26,10 +26,8 @@ public class MessageLoaderService {
 	private void readMessages() {
 		if (Statics.getLoggedUser() != null) {
 			List<Message> messages = communicationService.readMessage();
-			messages.forEach(messages1 -> {
-				MessagesEvent messages2 = new MessagesEvent(this, messages1.getMessage());
-				publisher.publishEvent(messages2);
-			});
+			MessagesEvent messages2 = new MessagesEvent(this, messages);
+			publisher.publishEvent(messages2);
 		}
 	}
 }

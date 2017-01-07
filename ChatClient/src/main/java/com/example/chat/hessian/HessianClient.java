@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import com.caucho.hessian.client.HessianConnection;
 import com.caucho.hessian.client.HessianConnectionFactory;
 import com.caucho.hessian.client.HessianProxyFactory;
+import com.caucho.hessian.client.HessianURLConnectionFactory;
 import com.example.chat.protocol.IChatService;
 
 @Component
@@ -26,7 +27,7 @@ public class HessianClient {
 		String serviceUrl = url + HESSIAN_SERVICE;
 		
 		HessianProxyFactory hPF=new HessianProxyFactory();
-		HessianConnectionFactory hCF = new HessianConnectionFactory() {			
+		HessianConnectionFactory hCF = new HessianURLConnectionFactory() {			
 			
 			@Override
 			public HessianConnection open(URL url) throws IOException {
