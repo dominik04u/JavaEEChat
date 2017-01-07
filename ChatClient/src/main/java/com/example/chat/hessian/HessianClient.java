@@ -17,7 +17,7 @@ import com.example.chat.protocol.IChatService;
 @Component
 public class HessianClient {
 
-	private static final String HESSIAN_SERVICE = "/hessianService";
+	private static final String HESSIAN_SERVICE = "hessianService";
 
 	@Autowired
 	@Value("${server.url}")

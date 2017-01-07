@@ -64,10 +64,9 @@ public class Application extends JFrame implements ApplicationListener<Applicati
 		JButton login = new JButton("Login");
 		pane1.add(login);
 		login.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				login.setEnabled(false);
-				loginButtonActionPerformed(evt);
-			}
+            public void actionPerformed(java.awt.event.ActionEvent event) {
+            	loginButtonActionPerformed(event);
+            }
 		});
 
 		pane2.setLayout(null);
@@ -76,10 +75,10 @@ public class Application extends JFrame implements ApplicationListener<Applicati
 		burlap.setSelected(true);
 		burlap.setBounds(59, 5, 80, 23);
 		burlap.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				burlapRadioActionPerformed(evt);
-			}
-		});
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            	burlapRadioActionPerformed(evt);
+            }
+	 });
 		pane2.add(burlap);
 		btnGroup.add(burlap);
 		JRadioButton hessian = new JRadioButton("Hessian");
