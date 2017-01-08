@@ -60,11 +60,18 @@ public class CommunicationService {
 	
 	public void sendMessage(String messageText){
 		Message message=new Message(messageText, getLoggedUser().getUsername());
+		LOGGER.info("wiadomość {}", message.getMessage());
 		CHAT_SERVICES.get(getSelectedProtocol()).sendMessage(getLoggedUser().getId(),message);
 	}
 	
 	public List<Message> readMessage(){
 		List<Message> messages=CHAT_SERVICES.get(getSelectedProtocol()).getMyMessages(getLoggedUser().getId());
+		LOGGER.info("lista rozmiar{}", messages.size());
 		return messages;
+	}
+	
+	public void changeProtocol(){
+		CHAT_SERVICES.get(getSelectedProtocol()).changeTechnology(getLoggedUser().getId(), getSelectedProtocol());
+		LOGGER.info("Joining protocol <{}>");
 	}
 }

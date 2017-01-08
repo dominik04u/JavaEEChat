@@ -16,16 +16,17 @@ import com.example.chat.protocol.Protocol;
 
 @Service
 public class UserService implements IUserService {
-	
-	private static final Logger LOGGER=LoggerFactory.getLogger(UserService.class);
-	private final Map<Long,User> users=new HashMap<>();
-	private final Set<Long> HessianList=new HashSet<>();
-	private final Set<Long> BurlapList=new HashSet<>();
-	
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
+	private final Map<Long, User> users = new HashMap<>();
+	private final Set<Long> HessianList = new HashSet<>();
+	private final Set<Long> BurlapList = new HashSet<>();
+
 	@Override
 	public long login(String username) {
 		User user = new User(username);
 		users.put(user.getId(), user);
+		HessianList.add(user.getId());
 		LOGGER.debug("Zalogowano <{}>, <{}>", user.getId(), user.getUsername());
 		return user.getId();
 	}
@@ -40,13 +41,12 @@ public class UserService implements IUserService {
 	@Override
 	public void sendMessage(long authorID, Message message) {
 		LOGGER.debug("Nowa wiadomość od <{}>", authorID);
-		if(HessianList.contains(authorID)){
-			for(long id:HessianList){
+		if (HessianList.contains(authorID)) {
+			for (long id : HessianList) {
 				users.get(id).newMessage(message);
 			}
-		}
-		else if(BurlapList.contains(authorID)){
-			for(long id:BurlapList){
+		} else if (BurlapList.contains(authorID)) {
+			for (long id : BurlapList) {
 				users.get(id).newMessage(message);
 			}
 		}
@@ -54,32 +54,22 @@ public class UserService implements IUserService {
 
 	@Override
 	public void changeTechnology(long author, Protocol protocol) {
-		switch(protocol){
+		switch (protocol) {
 		case HESSIAN:
-				HessianList.add(author);
-				BurlapList.remove(author);
+			HessianList.add(author);
+			BurlapList.remove(author);
 			break;
 		case BURLAP:
-				BurlapList.add(author);
-				HessianList.remove(author);
+			BurlapList.add(author);
+			HessianList.remove(author);
 			break;
 		}
-		
+
 	}
-	
+
 	@Override
 	public List<Message> readMessagesForUser(long userId) {
 		return users.get(userId).readMessages();
-}
-
-	
-/*	@Override
-	public Set<Long> findInactiveUsers(){
-		return users.entrySet()
-				.stream()
-				.filter(entry -> entry.getValue().isInactive())
-                .map(entry -> entry.getKey())
-                .collect(Collectors.toSet());
-	}*/
+	}
 
 }

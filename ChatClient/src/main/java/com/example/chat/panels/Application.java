@@ -19,13 +19,15 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
 import com.example.chat.event.LoginEvent;
+import com.example.chat.event.MessagesEvent;
 import com.example.chat.protocol.Message;
 import com.example.chat.protocol.Protocol;
 import com.example.chat.service.CommunicationService;
 import com.example.chat.service.Statics;
+import javax.swing.JTextPane;
 
 @Component
-public class Application extends JFrame implements ApplicationListener<ApplicationEvent> {
+public class Application extends JFrame implements ApplicationListener<MessagesEvent> {
 
 	private final ApplicationEventPublisher publisher;
 	private final CommunicationService communicationService;
@@ -41,7 +43,7 @@ public class Application extends JFrame implements ApplicationListener<Applicati
 
 	JTextField username;
 	TextArea message;
-	TextArea chatMessages;
+	JTextPane chatMessages;
 
 	private void initApp() {
 
@@ -64,20 +66,20 @@ public class Application extends JFrame implements ApplicationListener<Applicati
 		JButton login = new JButton("Login");
 		pane1.add(login);
 		login.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent event) {
-            	login.setEnabled(false);
-            	loginButtonActionPerformed(event);
-            }
+			public void actionPerformed(java.awt.event.ActionEvent event) {
+				login.setEnabled(false);
+				loginButtonActionPerformed(event);
+			}
 		});
 
 		pane2.setLayout(null);
 		JRadioButton burlap = new JRadioButton("Burlap");
 		burlap.setBounds(59, 5, 80, 23);
 		burlap.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-            	burlapRadioActionPerformed(evt);
-            }
-	 });
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				burlapRadioActionPerformed(evt);
+			}
+		});
 		pane2.add(burlap);
 		btnGroup.add(burlap);
 		JRadioButton hessian = new JRadioButton("Hessian");
@@ -95,7 +97,8 @@ public class Application extends JFrame implements ApplicationListener<Applicati
 		pane.add(pane1);
 		pane.add(pane2);
 
-		chatMessages = new TextArea();
+		chatMessages = new JTextPane();
+		chatMessages.setContentType("text/html");
 		chatMessages.setEditable(false);
 		chatMessages.setBounds(0, 33, 384, 160);
 		pane2.add(chatMessages);
@@ -107,16 +110,16 @@ public class Application extends JFrame implements ApplicationListener<Applicati
 		pane3.add(message);
 
 		// wyslij wiadomosc
-		JButton btn = new JButton("Send");
-		btn.setBounds(0, 100, 384, 20);
-		btn.setPreferredSize(new Dimension(80, 20));
-		btn.setPreferredSize(new Dimension(80, 20));
-		btn.addActionListener(new java.awt.event.ActionListener() {
+		JButton sendButton = new JButton("Send");
+		sendButton.setBounds(0, 100, 384, 20);
+		sendButton.setPreferredSize(new Dimension(80, 20));
+		sendButton.setPreferredSize(new Dimension(80, 20));
+		sendButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent event) {
 				sendButtonActionPerformed(event);
 			}
 		});
-		pane3.add(btn);
+		pane3.add(sendButton);
 
 		JFrame fr = new JFrame();
 		fr.setSize(400, 400);
@@ -140,50 +143,62 @@ public class Application extends JFrame implements ApplicationListener<Applicati
 	private void sendMessage() {
 		String mess = message.getText();
 		message.setText("");
-		// communicationService.sendMessage(mess);
+		communicationService.sendMessage(mess);
 	}
 
 	private void burlapRadioActionPerformed(java.awt.event.ActionEvent evt) {
 		chatMessages.setText("");
 		Statics.setSelectedProtocol(Protocol.BURLAP);
+		communicationService.changeProtocol();
 	}
 
 	// zmiana na hessian
 	private void hessianRadioActionPerformed(java.awt.event.ActionEvent evt) {
 		chatMessages.setText("");
 		Statics.setSelectedProtocol(Protocol.HESSIAN);
+		communicationService.changeProtocol();
 	}
-	
+
 	public void setText(List<Message> messages) {
-        messages.stream().forEach((message) -> {
-            updateMessages(message);
-            chatMessages.setText("<html><body>" + messagesBuilder.toString() + "</html></body>");
-        });
-    }
-	
-	 private void updateMessages(Message receivedMessage) {
-	        boolean myMessage = receivedMessage.getAuthor().equals(Statics.getLoggedUser().getUsername());
-	        if (myMessage) {
-	            messagesBuilder.append("<strong>");
-	        } else {
-	            messagesBuilder.append("<span>");
-	        }
-	        messagesBuilder.append(receivedMessage.getAuthor());
-	        messagesBuilder.append(":");
-	        if (myMessage) {
-	            messagesBuilder.append("</strong>");
-	        } else {
-	            messagesBuilder.append("</span>");
-	        }
-	        messagesBuilder.append("<pre>");
-	        messagesBuilder.append(receivedMessage.getMessage());
-	        messagesBuilder.append("</pre>");
-	        messagesBuilder.append("<hr/>");
+		messages.stream().forEach((message) -> {
+			updateMessages(message);
+			chatMessages.setText("<html><body>" + messagesBuilder.toString() + "</html></body>");
+		});
+	}
+
+	private void updateMessages(Message receivedMessage) {
+		boolean myMessage = receivedMessage.getAuthor().equals(Statics.getLoggedUser().getUsername());
+		if (myMessage) {
+			messagesBuilder.append("<strong>");
+		} else {
+			messagesBuilder.append("<span>");
+		}
+		messagesBuilder.append(receivedMessage.getAuthor());
+		messagesBuilder.append(":");
+		if (myMessage) {
+			messagesBuilder.append("</strong>");
+		} else {
+			messagesBuilder.append("</span>");
+		}
+		messagesBuilder.append("<pre>");
+		messagesBuilder.append(receivedMessage.getMessage());
+		messagesBuilder.append("</pre>");
+		messagesBuilder.append("<hr/>");
+	}
+
+	private void onMessageEvent(MessagesEvent evnt) {
+		chatMessages.setText("Myslales ze dziala?");
+		evnt.getMessages();
+		evnt.getMessages().stream().forEach((message) -> {
+			System.out.println(message.getMessage());
+			updateMessages(message);
+			chatMessages.setText("<html><body>" + messagesBuilder.toString() + "</html></body>");
+		});
 	}
 
 	@Override
-	public void onApplicationEvent(ApplicationEvent arg0) {
-		// TODO Auto-generated method stub
+	public void onApplicationEvent(MessagesEvent evnt) {
+		onMessageEvent(evnt);
 
 	}
 
