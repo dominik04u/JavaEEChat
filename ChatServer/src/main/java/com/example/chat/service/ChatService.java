@@ -24,13 +24,13 @@ public class ChatService implements IChatService {
 
 	@Override
 	public Long login(String username) {
-		LOGGER.info("użytkownik <{}> zalogował się", username);
+		LOGGER.info("Użytkownik <{}> zalogował się", username);
 		return userService.login(username);
 	}
 
 	@Override
 	public boolean logout(long userId) {
-		LOGGER.info("użytkownik <{}> wylogował się", userId);
+		LOGGER.info("Użytkownik <{}> wylogował się", userId);
 		userService.logout(userId);
 		return true;
 	}

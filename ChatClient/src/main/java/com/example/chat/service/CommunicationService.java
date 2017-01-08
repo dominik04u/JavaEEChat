@@ -65,7 +65,6 @@ public class CommunicationService {
 	
 	public List<Message> readMessage(){
 		List<Message> messages=CHAT_SERVICES.get(getSelectedProtocol()).getMyMessages(getLoggedUser().getId());
-		LOGGER.info("lista rozmiar{}", messages.size());
 		return messages;
 	}
 	

@@ -14,11 +14,11 @@ public class BurlapConfig {
 	
 	@Bean(name="/burlapService")
 	public BurlapServiceExporter burlapService(){
-		BurlapServiceExporter burlapServiceExporter =new BurlapServiceExporter();
-		burlapServiceExporter.setService(burlapService);
-		burlapServiceExporter.setServiceInterface(IChatService.class);
+		BurlapServiceExporter bSE =new BurlapServiceExporter();
+		bSE.setService(burlapService);
+		bSE.setServiceInterface(IChatService.class);
 		
-		return burlapServiceExporter;
+		return bSE;
 	}
 	
 }
