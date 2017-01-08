@@ -18,4 +18,8 @@ public class Message implements Serializable {
 	public String getAuthor(){
 		return author;
 	}
+	
+	public Message clone(){
+		return(new Message(this.mess, this.author));
+	}
 }

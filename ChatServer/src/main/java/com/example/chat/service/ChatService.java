@@ -44,6 +44,7 @@ public class ChatService implements IChatService {
 
 	@Override
 	public boolean changeTechnology(long author, Protocol protocol) {
+		LOGGER.info("Użytkownik <{}> zmienil technologie <{}>", author, protocol);
 		userService.changeTechnology(author,protocol);
 		return false;
 	}

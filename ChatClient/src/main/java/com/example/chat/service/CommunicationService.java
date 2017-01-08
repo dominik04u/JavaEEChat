@@ -60,7 +60,6 @@ public class CommunicationService {
 	
 	public void sendMessage(String messageText){
 		Message message=new Message(messageText, getLoggedUser().getUsername());
-		LOGGER.info("wiadomość {}", message.getMessage());
 		CHAT_SERVICES.get(getSelectedProtocol()).sendMessage(getLoggedUser().getId(),message);
 	}
 	
