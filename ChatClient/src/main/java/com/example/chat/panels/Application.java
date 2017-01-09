@@ -31,7 +31,7 @@ import com.example.chat.service.Statics;
 public class Application extends JFrame implements ApplicationListener<MessagesEvent> {
 
 	private final ApplicationEventPublisher publisher;
-	private final StringBuilder burlapBuilder, hessianBuilder;
+	private final StringBuilder burlapBuilder, hessianBuilder, xmlrpcBuilder;
 	private final CommunicationService communicationService;
 
 	@Autowired
@@ -39,6 +39,7 @@ public class Application extends JFrame implements ApplicationListener<MessagesE
 		this.publisher = publisher;
 		this.burlapBuilder = new StringBuilder();
 		this.hessianBuilder = new StringBuilder();
+		this.xmlrpcBuilder = new StringBuilder();
 		this.communicationService = communicationService;
 		initApp();
 	}
@@ -50,13 +51,16 @@ public class Application extends JFrame implements ApplicationListener<MessagesE
 	JTextField username;
 	ButtonGroup btnGroup;
 	JRadioButton burlap, hessian;
+	private JRadioButton xmlrpc;
+	private JPanel panel;
+	private JPanel panel_1;
 
 	private void initApp() {
 
 		// wyslij wiadomosc
 		sendButton = new JButton("Send");
 		sendButton.setEnabled(false);
-		sendButton.setBounds(0, 105, 384, 20);
+		sendButton.setBounds(0, 100, 384, 20);
 		sendButton.setPreferredSize(new Dimension(80, 20));
 		sendButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent event) {
@@ -75,24 +79,39 @@ public class Application extends JFrame implements ApplicationListener<MessagesE
 		// pole dla nowej wiadomosci
 		message = new JTextArea();
 		message.setBounds(0, 0, 384, 100);
-		// pole na nazwe uzytkownika
-		username = new JTextField(10);
 
 		// radiobuttony do zmiany technologi
 		btnGroup = new ButtonGroup();
 
 		JPanel mainPane = new JPanel();
 		JPanel pane1 = new JPanel();
-		pane1.setBounds(0, 0, 384, 46);
+		pane1.setBounds(0, 0, 384, 55);
 		JPanel pane2 = new JPanel();
-		pane2.setBounds(0, 46, 384, 180);
+		pane2.setBounds(0, 55, 384, 180);
 		JPanel pane3 = new JPanel();
-		pane3.setBounds(0, 230, 384, 125);
+		pane3.setBounds(0, 240, 384, 125);
 		GridLayout flow = new GridLayout(2, 2);
 		FlowLayout floww = new FlowLayout();
 		pane1.setLayout(flow);
 		pane2.setLayout(floww);
-		pane1.add(username);
+		
+		panel = new JPanel();
+		pane1.add(panel);
+		panel.setLayout(null);
+		// pole na nazwe uzytkownika
+		username = new JTextField(10);
+		username.setBounds(40, 5, 150, 20);
+		panel.add(username);
+		// zaloguj
+		loginButton = new JButton("Login");
+		loginButton.setBounds(274, 5, 80, 20);
+		panel.add(loginButton);
+		loginButton.setPreferredSize(new Dimension(80, 20));
+		loginButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent event) {
+				loginButtonActionPerformed(event);
+			}
+		});
 
 		pane2.add(scrollPane);
 		pane3.setLayout(null);
@@ -102,26 +121,20 @@ public class Application extends JFrame implements ApplicationListener<MessagesE
 		mainPane.setLayout(null);
 
 		mainPane.add(pane1);
+		
+		panel_1 = new JPanel();
+		pane1.add(panel_1);
 		burlap = new JRadioButton("Burlap");
+		panel_1.add(burlap);
 		burlap.setEnabled(false);
 		burlap.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				burlapRadioActionPerformed(evt);
 			}
 		});
-		// zaloguj
-		loginButton = new JButton("Login");
-		loginButton.setPreferredSize(new Dimension(80, 20));
-		loginButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent event) {
-				loginButtonActionPerformed(event);
-			}
-		});
-		pane1.add(loginButton);
 		btnGroup.add(burlap);
-
-		pane1.add(burlap);
 		hessian = new JRadioButton("Hessian");
+		panel_1.add(hessian);
 		hessian.setEnabled(false);
 		hessian.setSelected(true);
 		hessian.addActionListener(new java.awt.event.ActionListener() {
@@ -130,7 +143,16 @@ public class Application extends JFrame implements ApplicationListener<MessagesE
 			}
 		});
 		btnGroup.add(hessian);
-		pane1.add(hessian);
+		
+		xmlrpc = new JRadioButton("XmlRpc");
+		xmlrpc.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				xmlrpcRadioActionPerformed(evt);
+			}
+		});
+		panel_1.add(xmlrpc);
+		xmlrpc.setEnabled(false);
+		btnGroup.add(xmlrpc);
 		mainPane.add(pane2);
 		mainPane.add(pane3);
 
@@ -148,12 +170,14 @@ public class Application extends JFrame implements ApplicationListener<MessagesE
 		sendButton.setEnabled(true);
 		hessian.setEnabled(true);
 		burlap.setEnabled(true);
+		xmlrpc.setEnabled(true);
 		publisher.publishEvent(loginEvent);
 
 	}
 
 	// zmiana na burlap
 	private void burlapRadioActionPerformed(java.awt.event.ActionEvent evt) {
+		burlapBuilder.setLength(0);
 		Statics.setSelectedProtocol(Protocol.BURLAP);
 		communicationService.changeProtocol();
 		chatMessages.setText("<html><body>" + burlapBuilder.toString() + "</html></body>");
@@ -161,10 +185,19 @@ public class Application extends JFrame implements ApplicationListener<MessagesE
 
 	// zmiana na hessian
 	private void hessianRadioActionPerformed(java.awt.event.ActionEvent evt) {
-		chatMessages.setText("");
+		hessianBuilder.setLength(0);
+		//chatMessages.setText("");
 		Statics.setSelectedProtocol(Protocol.HESSIAN);
 		communicationService.changeProtocol();
 		chatMessages.setText("<html><body>" + hessianBuilder.toString() + "</html></body>");
+	}
+	
+	private void xmlrpcRadioActionPerformed(java.awt.event.ActionEvent evt) {
+		//chatMessages.setText("");
+		xmlrpcBuilder.setLength(0);
+		Statics.setSelectedProtocol(Protocol.XML_RPC);
+		communicationService.changeProtocol();
+		chatMessages.setText("<html><body>" + xmlrpcBuilder.toString() + "</html></body>");
 	}
 
 	// akcja do wysylania widomosci
@@ -181,11 +214,12 @@ public class Application extends JFrame implements ApplicationListener<MessagesE
 
 	private void updateMessages(Message receivedMessage, StringBuilder messagesBuilder) {
 		boolean myMessage = receivedMessage.getAuthor().equals(Statics.getLoggedUser().getUsername());
-		//System.out.println(receivedMessage.getMessage());
 		if (myMessage) {
-			messagesBuilder.append("<strong>"+receivedMessage.getAuthor()+":"+"</strong>"+"<span>"+receivedMessage.getMessage()+"</span>");
+			messagesBuilder.append("<strong>" + receivedMessage.getAuthor() + ":" + "</strong>" + "<span>"
+					+ receivedMessage.getMessage() + "</span><br>");
 		} else {
-			messagesBuilder.append("<span>"+receivedMessage.getAuthor()+":"+"</span>"+"<span>"+receivedMessage.getMessage()+"</span>");
+			messagesBuilder.append("<span>" + receivedMessage.getAuthor() + ":" + "</span>" + "<span>"
+					+ receivedMessage.getMessage() + "</span><br>");
 		}
 	}
 
@@ -194,9 +228,12 @@ public class Application extends JFrame implements ApplicationListener<MessagesE
 			if (Statics.getSelectedProtocol() == Protocol.BURLAP) {
 				updateMessages(message, burlapBuilder);
 				chatMessages.setText("<html><body>" + burlapBuilder.toString() + "</html></body>");
-			} else {
+			} else if(Statics.getSelectedProtocol() == Protocol.HESSIAN) {
 				updateMessages(message, hessianBuilder);
 				chatMessages.setText("<html><body>" + hessianBuilder.toString() + "</html></body>");
+			}else{
+				updateMessages(message, xmlrpcBuilder);
+				chatMessages.setText("<html><body>" + xmlrpcBuilder.toString() + "</html></body>");
 			}
 		});
 	}

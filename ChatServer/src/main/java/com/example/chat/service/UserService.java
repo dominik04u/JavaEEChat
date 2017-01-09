@@ -21,6 +21,7 @@ public class UserService implements IUserService {
 	private final Map<Long, User> users = new HashMap<>();
 	private final Set<Long> HessianList = new HashSet<>();
 	private final Set<Long> BurlapList = new HashSet<>();
+	private final Set<Long> XmlRpcList = new HashSet<>();
 
 	@Override
 	public long login(String username) {
@@ -49,6 +50,10 @@ public class UserService implements IUserService {
 			for (long id : BurlapList) {
 				users.get(id).newMessage(message);
 			}
+		}else if(XmlRpcList.contains(authorID)){
+			for (long id : XmlRpcList) {
+				users.get(id).newMessage(message);
+			}
 		}
 	}
 
@@ -58,11 +63,17 @@ public class UserService implements IUserService {
 		case HESSIAN:
 			HessianList.add(author);
 			BurlapList.remove(author);
+			XmlRpcList.remove(author);
 			break;
 		case BURLAP:
 			BurlapList.add(author);
 			HessianList.remove(author);
+			XmlRpcList.remove(author);
 			break;
+		case XML_RPC:
+			XmlRpcList.add(author);
+			BurlapList.remove(author);
+			HessianList.remove(author);
 		}
 
 	}

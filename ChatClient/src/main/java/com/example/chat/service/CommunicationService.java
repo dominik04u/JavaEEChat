@@ -1,10 +1,14 @@
 package com.example.chat.service;
 
+import static com.example.chat.service.Statics.getLoggedUser;
+import static com.example.chat.service.Statics.getSelectedProtocol;
+
 import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.xmlrpc.client.XmlRpcClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +20,7 @@ import com.example.chat.model.User;
 import com.example.chat.protocol.IChatService;
 import com.example.chat.protocol.Message;
 import com.example.chat.protocol.Protocol;
-import static com.example.chat.service.Statics.*;
+import com.example.chat.xmlrpc.XmlRpc;
 
 @Component
 public class CommunicationService {
@@ -26,13 +30,16 @@ public class CommunicationService {
 	private static final Map<Protocol, IChatService> CHAT_SERVICES=new HashMap<>();
 	private final BurlapClient burlapClient;
 	private final HessianClient hessianClient;
+	private final XmlRpc xmlrpcClient;
 	
 	@Autowired
-	public CommunicationService(BurlapClient burlapClient, HessianClient hessianClient) throws MalformedURLException {
+	public CommunicationService(BurlapClient burlapClient, HessianClient hessianClient,XmlRpc xmlrpcClient) throws MalformedURLException {
 		this.burlapClient=burlapClient;
 		this.hessianClient=hessianClient;
+		this.xmlrpcClient=xmlrpcClient;
 		burlap();
 		hessian();
+		xmlrpc();
 	}
 	
 	private void burlap(){
@@ -43,6 +50,11 @@ public class CommunicationService {
 	private void hessian(){
 		IChatService hessianService = hessianClient.getService();
 		CHAT_SERVICES.put(Protocol.HESSIAN, hessianService);
+	}
+	
+	private void xmlrpc() throws MalformedURLException{
+		 IChatService xmlRpcService = xmlrpcClient.getService();
+		CHAT_SERVICES.put(Protocol.XML_RPC, xmlRpcService);
 	}
 	
 	public void login(String username){
